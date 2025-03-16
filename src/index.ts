@@ -6,6 +6,7 @@ import compression from "compression";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import router from "./router/index";
 
 dotenv.config();
 const app = express();
@@ -48,3 +49,4 @@ mongoose.connect(MONGO_URL)
     process.exit(1);
   });
 
+app.use("/api/", router());

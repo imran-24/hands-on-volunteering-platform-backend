@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL") // MongoDB connection string
+}
+
+model User {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  email          String   @unique
+  password       String
+  bio            String?
+  skills         String[]
+  causes         String[]
+  profileImage   String?
+  coverImage     String?
+  isOrganization Boolean  @default(false)
+  volunteerHours Int      @default(0)
+  points         Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relationships
+  comments      Comment[]     @relation("UserComments")
+  eventsCreated Event[]       @relation("UserCreatedEvents")
+  eventsJoined  UserEvent[]   @relation("UserJoinedEvents")
+  helpRequests  HelpRequest[] @relation("UserHelpRequests")
+
+  teamsCreated Team[] @relation("UserCreatedTeams")
+
+  teamsJoined UserTeam[] @relation("UserJoinedTeams")
+  logs        String[]
+}
+
+model Event {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  description  String?
+  category     String?
+  date         DateTime
+  startTime    String
+  endTime      String
+  location     String
+  address      String?
+  city         String?
+  country      String?
+  imageUrl     String?
+  isOnline     Boolean  @default(false)
+  meetingLink  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  urgencyLevel String?
+
+  // Relationships
+  organizer   User        @relation("UserCreatedEvents", fields: [organizerId], references: [id])
+  organizerId String      @db.ObjectId
+  attendees   UserEvent[] @relation("UserJoinedEvents")
+  logs        String[]
+}
+
+model UserEvent {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String @db.ObjectId
+  eventId String @db.ObjectId
+
+  // Relationships
+  user  User  @relation("UserJoinedEvents", fields: [userId], references: [id])
+  event Event @relation("UserJoinedEvents", fields: [eventId], references: [id])
+}
+
+model HelpRequest {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  urgency     String
+  createdAt   DateTime @default(now())
+  photoUrl    String?
+
+  // References
+  userId     String   @db.ObjectId
+  user       User     @relation("UserHelpRequests", fields: [userId], references: [id])
+  volunteers String[]
+
+  // One-to-Many Relationship with Comments
+  comments Comment[]
+}
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  content   String
+  createdAt DateTime @default(now())
+
+  // References
+  userId        String      @db.ObjectId
+  user          User        @relation("UserComments", fields: [userId], references: [id])
+  helpRequestId String      @db.ObjectId
+  helpRequest   HelpRequest @relation(fields: [helpRequestId], references: [id])
+}
+
+model Team {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  description String?
+  type        String // "private" or "public"
+  createdAt   DateTime @default(now())
+
+  organizer   User       @relation("UserCreatedTeams", fields: [organizerId], references: [id])
+  organizerId String     @db.ObjectId
+  // Relationships
+  members     UserTeam[] @relation("UserJoinedTeams")
+}
+
+model UserTeam {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  teamId String @db.ObjectId
+
+  // Relationships
+  user User @relation("UserJoinedTeams", fields: [userId], references: [id])
+  team Team @relation("UserJoinedTeams", fields: [teamId], references: [id])
+}
+
+model VolunteerLog {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  hours     Int
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // References
+  userId  String  @db.ObjectId
+  eventId String?
+}

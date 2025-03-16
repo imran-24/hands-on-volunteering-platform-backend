@@ -39,12 +39,10 @@ Ensure you have the following installed:
    - Add the following variables:
      ```sh
      DATABASE_URL=mongodb+srv://imransyam:12341234@cluster0.k2g5n.mongodb.net/event-management
-
-    ACCESS_TOKEN_SECRET=
-    REFRESH_TOKEN_SECRET=
-    NODE_ENV="development"
-    BASE_URL="http://localhost:5174"
-
+     ACCESS_TOKEN_SECRET=
+     REFRESH_TOKEN_SECRET=
+     NODE_ENV="development"
+     BASE_URL="http://localhost:5174"
      ```
 
 ### Database Setup
@@ -103,5 +101,5 @@ npm start
 Ensure the `.env` file is correctly configured on the server.
 
 ---
-### 🎉 Happy Coding!
+
 

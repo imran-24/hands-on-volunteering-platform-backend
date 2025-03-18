@@ -17,7 +17,7 @@ export const verifyJWT = async (
 
     const token = authHeader.split(" ")[1];
 
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err: any, decoded: any) => {
       if (err) {
         console.error("JWT Verification Error:", err);
         return res.status(403).json({ message: "Forbidden" });

@@ -41,6 +41,7 @@ export const allTeams = async (cursor: string) => {
     });
   }
 
+  
   let nextCursor = null;
   if (teams.length === TEAM_BATCH){
     nextCursor = teams[TEAM_BATCH - 1].id;

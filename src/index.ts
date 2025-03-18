@@ -15,6 +15,7 @@ app.use(
   cors({
     origin: process.env.BASE_URL,
     credentials: true,
+
     // methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     // allowedHeaders: [
     //   "Content-Type",
@@ -30,17 +31,15 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 const server = http.createServer(app);
 
-server.listen(8070, () => {
-  console.log("Server running on http://localhost:8070/");
+server.listen(8050, () => {
+  console.log("Server running on http://localhost:8050/");
 });
-
 const MONGO_URL = process.env.DATABASE_URL;
 
 if (!MONGO_URL) {
   console.error('DATABASE_URL is not defined in environment variables');
   process.exit(1);
 }
-
 mongoose.Promise = Promise;
 mongoose.connect(MONGO_URL)
   .then(() => console.log('Connected to MongoDB'))
@@ -49,4 +48,5 @@ mongoose.connect(MONGO_URL)
     process.exit(1);
   });
 
+  
 app.use("/api/", router());
